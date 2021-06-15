@@ -207,8 +207,27 @@ main_v1_1(void)
 	// 这部分由同学们来完成
 	// 
 	printf("Create UserK4 and register it to disk.\n");
-	
-	
+	initFlags = TSS_KEY_TYPE_BIND | TSS_KEY_SIZE_2048 |
+	    		TSS_KEY_VOLATILE | TSS_KEY_AUTHORIZATION |
+	    		TSS_KEY_MIGRATABLE;
+	result = my_create_load_key(hContext, initFlags, hKey3, &hKey4, "K4");
+	if (result != TSS_SUCCESS) {
+		print_error("create_key", result);
+		Tspi_Context_FreeMemory(hContext, NULL);
+		Tspi_Context_Close(hContext);
+		exit(result);
+	}
+	result = Tspi_Context_RegisterKey(hContext, hKey4,
+						   TSS_PS_TYPE_SYSTEM,
+						   UUID_K4,
+						   TSS_PS_TYPE_SYSTEM,
+						   UUID_K3);
+	if (result != TSS_SUCCESS) {
+		print_error("Tspi_Context_RegisterKey", result);
+		Tspi_Context_FreeMemory(hContext, NULL);
+		Tspi_Context_Close(hContext);
+		exit(result);
+	}
 	printf("Create and register K4 successed!\n");
 	
 	// Unload keys, pay attention to the order, child key must unload first

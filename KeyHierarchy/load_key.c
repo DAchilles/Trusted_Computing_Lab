@@ -187,12 +187,35 @@ main_v1_2(char version){
 	printf("Load UserK3 sucessed!\n");
 
 	// -------------------------------- load k4 ---------------------------------
-	printf("Loading K4...\n");
 	// TODO:
 	//      这部分代码由同学们自己完成
 	//
+	printf("Loading K4...\n");
 
-	
+	result = Tspi_Context_GetKeyByUUID(hContext, TSS_PS_TYPE_SYSTEM, UUID_K4, &hKey4);
+	if (result != TSS_SUCCESS) {
+		print_error("Tspi_Context_GetKeyByUUID", result);
+		print_error_exit(nameOfFunction, err_string(result));
+		Tspi_Context_FreeMemory(hContext, NULL);
+		Tspi_Context_Close(hContext);
+		exit(result);
+	}
+
+	result = set_popup_secret(hContext, hKey3, TSS_POLICY_USAGE, "Input K3's pin", 0);
+	if (TSS_SUCCESS != result) {
+		print_error("set_popup_secret", result);
+		Tspi_Context_Close(hContext);
+		return result;
+	}
+
+	result = Tspi_Key_LoadKey(hKey4, hKey3);
+	if (result != TSS_SUCCESS) {
+		print_error("Tspi_Key_LoadKey", result);
+		Tspi_Context_FreeMemory(hContext, NULL);
+		Tspi_Context_Close(hContext);
+		exit(result);
+	}
+
 	printf("Load UserK4 sucessed!\n");
 
 	//验证使用测略
