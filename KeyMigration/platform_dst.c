@@ -282,10 +282,14 @@ mig_key(void)
 
 	fclose(fp);
 
-	// Convert Migration Blob
-
-	// TODO: 完成以下代码，参考Tspi_Key_ConvertMigrationBlob
-	
+	// TODO Convert Migration Blob
+	// 	完成以下代码，参考Tspi_Key_ConvertMigrationBlob
+	result = Tspi_Key_ConvertMigrationBlob(hNewMigKey, 
+					hSRK, 
+					u32RandomLen, 
+					pRandom, 
+					u32MigBlobLen, 
+					pMigBlob);
 	free(pRandom);
 	free(pMigBlob);
 	if (TSS_SUCCESS != result) {
